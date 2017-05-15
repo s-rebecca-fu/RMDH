@@ -11,6 +11,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class story extends Application
 {
 
+    //homepage for the "story"
     public function index() {
         $this->data['menubar'] = $this->parser->parse("menubar", $this->data, true);
         $this->data['user'] = $this->session->userdata('user');
@@ -21,8 +22,8 @@ class story extends Application
         $this->render();
     }
 
+    //get all stories in the database and order by post time desc
     public function getAll() {
-       // $records = $this->stories->getAllStories();
         $this->db->from("stories");
         $this->db->order_by("posttime","desc");
         $records =  $this->db->get()->result();
@@ -56,7 +57,7 @@ class story extends Application
                 $media_result = implode(" ",$temp_link);
             } else if($story->video != ""){
                 $temp_link = $story->video;
-                //$media_result = "<div class='text-center'><iframe width='300' height='200' src='https://www.youtube.com/embed/".$temp_link."'></iframe></div>";
+                $media_result = "<div class='text-center'><iframe width='300' height='200' src='https://www.youtube.com/embed/".$temp_link."'></iframe></div>";
             }
 
             $tempstories[] = array(
@@ -79,6 +80,7 @@ class story extends Application
         $this->render();
     }
 
+    //the edit page for a single story
     public function edit($id){
         $tempArray = $this->stories->getSingleOne($id);
         $this->data['menubar'] = $this->parser->parse("menubar", $this->data, true);
@@ -88,6 +90,7 @@ class story extends Application
         $this->render();
     }
 
+    //the function that connect to database, and update things
     public function update(){
         $publishvalue = 0;
         if(isset($_POST['publish']) && $_POST['publish'] == 'published') {
@@ -117,17 +120,23 @@ class story extends Application
         $this->getAll();
     }
 
+    //the fuction that delete a single story
     public function delete($id) {
         $this->db->delete('stories', array('id' => $id));
         $this->getAll();
     }
 
+    //delete single image for each story, and update the image attribute in database
     public function imagedelete($id,$image) {
         $temp_result = $this->stories->getAllStories();
         $temp_string ="";
         foreach ($temp_result as $single) {
             if($single->id == $id) {
                 $a = ",".$image;
+
+                if (!strpos($single->images,$a)) {
+                    $a = $image.",";
+                }
                 $temp_string = str_replace($a, "", $single->images);
                 break;
             }
@@ -141,6 +150,9 @@ class story extends Application
 
     }
 
+    //filters: get all records that published or not published
+    //if $value = yes , get published
+    //if $value = no, get unpublished
     public function published($value) {
         $temp_value ="";
         $tmp_publish="";

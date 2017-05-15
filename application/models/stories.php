@@ -54,7 +54,7 @@ class stories extends MY_Model
                     $media_result = implode(" ",$temp_link);
                 }else if($single->video != ""){
                     $temp_link = $single->video;
-                    //$media_result = "<div class='text-center'><iframe width='300' height='200' src='https://www.youtube.com/embed/".$temp_link."'></iframe></div>";
+                    $media_result = "<div class='text-center'><iframe width='300' height='200' src='https://www.youtube.com/embed/".$temp_link."'></iframe></div>";
 
                 }
 

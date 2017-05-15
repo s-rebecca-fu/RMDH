@@ -11,12 +11,16 @@ require_once(APPPATH.'controllers/homepage.php');
 
 class user extends Application
 {
+    /**
+     * the homepage for user
+     */
     public function index() {
         $this->data['pagebody'] = 'homepage';
         $this->data['message'] = '<br>';
         $this->render();
     }
     /**
+     * the function that decide which page to go after post login information
      * @return array
      */
     public function check()
@@ -31,9 +35,13 @@ class user extends Application
             $this->data['message'] = "<div class='col-md-11 alert alert-danger'> Please verify your username and password"."</div>";
             $this->data['pagebody'] = "homepage";
         }
-        return $this->render();
+        $this->render();
     }
 
+    /**
+     * the function that connect to database, and get password, and check if the pwd is correct
+     * @return array
+     */
     public function checkPwd($user,$pwd) {
         $temppwd = $this->adminuser->getPassword($user);
         if(base64_decode($temppwd) == $pwd && $pwd != null && $user!="") {
@@ -42,6 +50,10 @@ class user extends Application
         return false;
     }
 
+    /**
+     * the create page for user
+     * @return array
+     */
     public function addUser() {
         $this->data["error"] = "<div></div>";
         $this->data['menubar'] = $this->parser->parse("menubar", $this->data, true);
@@ -51,6 +63,10 @@ class user extends Application
         //http://comp4711.backend/user/addUser
     }
 
+    /**
+     * the function that verify if the password and confirm one is same
+     * @return array
+     */
     public function verify(){
         if($_POST["pwd"] == $_POST["confirm"]) {
             $resultArray = array(
@@ -67,6 +83,10 @@ class user extends Application
         $this->render();
     }
 
+    /**
+     * the function that log out
+     * @return array
+     */
     public function logout() {
         $this->session->unset_userdata('user');
         $this->session->sess_destroy();
