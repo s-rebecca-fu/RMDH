@@ -18,4 +18,3 @@ class Homepage extends Application
         $this->render();
 	}
 }
-

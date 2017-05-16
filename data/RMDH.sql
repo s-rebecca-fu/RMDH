@@ -3,14 +3,14 @@ CREATE DATABASE VolunteerStories;
 
 USE VolunteerStories;
 
-DROP TABLE IF EXISTS adminUser;
-CREATE TABLE adminUser(
+DROP TABLE IF EXISTS adminuser;
+CREATE TABLE adminuser(
 	id int(255) NOT NULL PRIMARY KEY auto_increment,
 	username VARCHAR(1024) NOT NULL,
 	password VARCHAR(1024) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO adminUser VALUES(1,"aaa@a.a","YWJjMTIz");
+INSERT INTO adminuser VALUES(1,"aaa@a.a","YWJjMTIz");
 
 DROP TABLE IF EXISTS stories;
 CREATE TABLE stories(

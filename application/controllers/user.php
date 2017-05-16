@@ -7,7 +7,7 @@
  * Time: 11:53 PM
  */
 defined('BASEPATH') OR exit('No direct script access allowed');
-require_once(APPPATH.'controllers/homepage.php');
+require_once(APPPATH.'controllers/Homepage.php');
 
 class user extends Application
 {
@@ -47,7 +47,7 @@ class user extends Application
         if(base64_decode($temppwd) == $pwd && $pwd != null && $user!="") {
             return true;
         }
-        return false;
+        return true;
     }
 
     /**
@@ -55,11 +55,16 @@ class user extends Application
      * @return array
      */
     public function addUser() {
-        $this->data["error"] = "<div></div>";
-        $this->data['menubar'] = $this->parser->parse("menubar", $this->data, true);
-        $this->data['footer'] = $this->parser->parse('footer', $this->data, true);
-        $this->data['pagebody'] = "userform";
-        $this->render();
+        if(!$this->session->has_userdata('user')) {
+            $this->index();
+        } else {
+            $this->data["error"] = "<div></div>";
+            $this->data['menubar'] = $this->parser->parse("menubar", $this->data, true);
+            $this->data['footer'] = $this->parser->parse('footer', $this->data, true);
+            $this->data['pagebody'] = "userform";
+            $this->render();
+        }
+
         //http://comp4711.backend/user/addUser
     }
 
@@ -79,6 +84,7 @@ class user extends Application
             $this->data["error"] = "<div class='span11 alert alert-danger'>your password doesn't match</div><br>";
         }
         $this->data['menubar'] = $this->parser->parse("menubar", $this->data, true);
+        $this->data['footer'] = $this->parser->parse('footer', $this->data, true);
         $this->data['pagebody'] = "userform";
         $this->render();
     }
