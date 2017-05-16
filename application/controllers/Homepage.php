@@ -13,8 +13,9 @@ class Homepage extends Application
 	 * Homepage for our app
 	 */
     public function index(){
-            $this->data['pagebody'] = 'homepage';
-            $this->render();
+        $this->data['pagebody'] = 'homepage';
+        $this->data['message'] = '<br>';
+        $this->render();
 	}
 }
 
