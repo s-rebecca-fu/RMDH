@@ -6,16 +6,14 @@
  * Time: 1:05 AM
  */?>
 {menubar}
-<div class="mainarea">
-    <div class="row text-center weltext">
-        <br>
-        <br>
-        <br>
-        <h2>{user}</h2><br>
-        <h2>
-            Welcome to Data Management System
-        </h2>
-    </div>
+
+<div class="row text-center weltext">
+    <br><br><br>
+    <h2>{user}</h2><br>
+    <h2>
+        Welcome to Data Management System
+    </h2>
+    <br><br><br>
 </div>
 
 {footer}

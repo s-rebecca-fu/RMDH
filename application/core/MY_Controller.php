@@ -33,10 +33,6 @@ class Application extends CI_Controller
 	function render($template = 'template')
 	{
 		$this->data['content'] = $this->parser->parse($this->data['pagebody'], $this->data, true);
-
-        //$this->data['footer'] = $this->parser->parse('footer', $this->data, true);
-
-		//$this->data['message'] = "welcome to the management system";
 		$this->parser->parse('template', $this->data);
 	}
 

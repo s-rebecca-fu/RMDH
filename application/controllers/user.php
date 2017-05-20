@@ -15,6 +15,31 @@ class user extends Application
      * the homepage for user
      */
     public function index() {
+        $record = $this->adminuser->getAllUser();
+        $temp_users = array();
+        //var_dump($record);
+        foreach ($record as $user) {
+            $delete = "";
+            if($user->role != "manager") {
+                $delete = "delete";
+            }
+            $temp_users[] = array(
+                'id' =>  $user->id,
+                'username' => $user->username,
+                'realname' => $user->realname,
+                'delete' => $delete
+            );
+        }
+        //var_dump($temp_users);
+
+        $this->data['menubar'] = $this->parser->parse("menubar", $this->data, true);
+        $this->data['footer'] = $this->parser->parse('footer', $this->data, true);
+        $this->data['records'] = $temp_users;
+        $this->data['pagebody'] = 'showusers';
+        $this->render();
+    }
+
+    public function go_home() {
         $this->data['pagebody'] = 'homepage';
         $this->data['message'] = '<br>';
         $this->render();
@@ -44,10 +69,11 @@ class user extends Application
      */
     public function checkPwd($user,$pwd) {
         $temppwd = $this->adminuser->getPassword($user);
+        //var_dump($temppwd)
         if(base64_decode($temppwd) == $pwd && $pwd != null && $user!="") {
             return true;
         }
-        return true;
+        return false;
     }
 
     /**
@@ -56,7 +82,7 @@ class user extends Application
      */
     public function addUser() {
         if(!$this->session->has_userdata('user')) {
-            $this->index();
+            $this->go_home();
         } else {
             $this->data["error"] = "<div></div>";
             $this->data['menubar'] = $this->parser->parse("menubar", $this->data, true);
@@ -73,20 +99,46 @@ class user extends Application
      * @return array
      */
     public function verify(){
-        if($_POST["pwd"] == $_POST["confirm"]) {
-            $resultArray = array(
-                'username' => $_POST["username"],
-                'password' => base64_encode($_POST["pwd"])
-            );
-            $this->db->insert("adminuser",$resultArray);
-            $this->data["error"] = "<div class='span11 alert alert-success'>add admin user successfully</div><br>";
+        if($_POST['username'] == "") {
+            $this->data["error"] = "<div class='span11 alert alert-danger'>username cannot be empty</div><br>";
         } else {
-            $this->data["error"] = "<div class='span11 alert alert-danger'>your password doesn't match</div><br>";
+            if($_POST["pwd"] == $_POST["confirm"]) {
+                if($this->checkDuplicateName($_POST["username"])){
+                    $role = "";
+                    if(!isset($_POST['role'])) {
+                        $role = "employee";
+                    }  else {
+                        $role = "manager";
+                    }
+                    $resultArray = array(
+                        'username' => $_POST["username"],
+                        'password' => base64_encode($_POST["pwd"]),
+                        'realname' => $_POST['realname'],
+                        'role' => $role
+                    );
+                    $this->db->insert("adminuser",$resultArray);
+                    $this->data["error"] = "<div class='span11 alert alert-success'>add admin user successfully</div><br>";
+                } else {
+                    $this->data["error"] = "<div class='span11 alert alert-danger'>The username exits already. Please change another one.</div><br>";
+                }
+            } else {
+                $this->data["error"] = "<div class='span11 alert alert-danger'>your password doesn't match</div><br>";
+            }
         }
-        $this->data['menubar'] = $this->parser->parse("menubar", $this->data, true);
-        $this->data['footer'] = $this->parser->parse('footer', $this->data, true);
-        $this->data['pagebody'] = "userform";
-        $this->render();
+        $this->index();
+    }
+
+    public function checkDuplicateName($username) {
+        return $this->adminuser->checkDuplicate($username);
+    }
+
+    public function delete($id) {
+        if(!$this->session->has_userdata('user')) {
+            $this->go_home();
+        } else {
+            $this->db->delete('adminuser', array('id' => $id));
+            $this->index();
+        }
     }
 
     /**

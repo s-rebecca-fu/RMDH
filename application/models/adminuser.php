@@ -14,6 +14,11 @@ class adminuser extends MY_Model {
         parent::__construct('adminuser', 'id');
     }
 
+    public function getAllUser()
+    {
+        return $this->all();
+    }
+
     public function getPassword($username)
     {
         foreach ($this->all() as $record) {
@@ -22,6 +27,14 @@ class adminuser extends MY_Model {
             }
         }
         return null;
+    }
+
+    public function checkDuplicate($user) {
+        $this->db->where("username", $user);
+        $query = $this->db->get("adminuser");
+        if ($query->num_rows() < 1)
+            return true;
+        return false;
     }
 
     public function insert($username,$password) {

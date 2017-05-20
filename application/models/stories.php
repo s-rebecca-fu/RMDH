@@ -32,30 +32,34 @@ class stories extends MY_Model
                 $temp_agree ="";
                 if($single->agreetoshare == 0) {
                     $temp_agree = "NO";
+                    $tmp_publish = "disabled='disabled'";
                 }else {
                     $temp_agree = "YES";
                 }
                 $temp_image = array();
                 $temp_link = array();
                 $media_result = "";
-                if($single->images != "") {
+                if($single->images!="") {
                     $temp_image[] = explode(",",$single->images);
                     //var_dump($temp_image);
-                    var_dump($temp_image);
                     foreach ($temp_image[0] as $image) {
-                        if($image != ""){
-                            $temp ="<div class='col-sm-3 text-center'><a href='http://4900.onebite.tk/pics/".$image."'>";
-                            $temp.="<img src='http://4900.onebite.tk/pics/".$image.".png' alter='".$image."' width='70px' height='70px'/></a>";
+                        if($image != "") {
+                            $temp ="<div class='col-sm-3 text-center'><a href='/pics/".$image."'>";
+                            $temp.="<img src='/pics/".$image.".png' alter='".$image."' width='70px' height='70px'/></a>";
                             $temp.="<a href='/story/imagedelete/".$id."/".$image."'>delete</a>";
                             $temp.="</div>";
                         }
                         array_push($temp_link,$temp);
                     }
                     $media_result = implode(" ",$temp_link);
-                }else if($single->video != ""){
+                }
+//echo $story->video;
+                if($single->video != ""){
                     $temp_link = $single->video;
-                    $media_result = "<div class='text-center'><iframe width='300' height='200' src='https://www.youtube.com/embed/".$temp_link."'></iframe></div>";
-
+                    if($media_result!=="") {
+                        $media_result .= "<br/><br/>";
+                    }
+                    $media_result .= "<div class='col-xs-12 text-center'><iframe width='300' height='200' src='https://www.youtube.com/embed/".$temp_link."'></iframe></div>";
                 }
 
                 $tempArray = array(
@@ -75,21 +79,4 @@ class stories extends MY_Model
         return null;
     }
 
-    // Compare date/time descending
-    public function sortDateTimeDesc($a, $b)
-    {
-        return strtotime($b['posttime']) - strtotime($a['posttime']);
-    }
-
-    public function sortedByDateTime($order)
-    {
-        // retrieve all transactions
-        $transactions = $this->all();
-        // convert from array of objects to array of arrays
-        foreach ($transactions as $transaction){
-            $converted[] = (array) $transaction;
-            usort($converted, array($this,"sortDateTimeDesc"));
-        }
-        return $converted;
-    }
 }

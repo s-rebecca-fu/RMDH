@@ -7,7 +7,6 @@
  * Time: 1:30 PM
  */
 defined('BASEPATH') OR exit('No direct script access allowed');
-require_once(APPPATH.'controllers/User.php');
 
 class story extends Application
 {
@@ -28,22 +27,29 @@ class story extends Application
     }
 
     //get all stories in the database and order by post time desc
-    public function getAll() {
+    public function get($value) {
         if(!$this->session->has_userdata('user')) {
             $this->goback();
         }else{
             //var_dump($this->session->userdata('user'));
+            $records = array();
             $this->db->from("stories");
-            $this->db->order_by("posttime","desc");
+            $this->db->order_by("id","desc");
+            if($value == "yes") {
+                $temp_value = 1;
+                $this->db->where('published', $temp_value);
+            } else if ($value == "no") {
+                $temp_value = 0;
+                $this->db->where('published', $temp_value);
+            }
             $records =  $this->db->get()->result();
-            //$records = $this->stories->sortedByDateTime("desc"); // get all the histories
+            $tmp_publish="";
             $tempstories = array();
             foreach ($records as $story) {
-                $tmp_publish="";
                 if($story->published == 0) {
-                    $tmp_publish="<input type='checkbox' name='publish' value='published' />";
+                    $tmp_publish="NO";
                 } else {
-                    $tmp_publish="<input type='checkbox' name='publish' value='published' checked='checked' />";
+                    $tmp_publish="YES";
                 }
                 $temp_agree ="";
                 if($story->agreetoshare == 0) {
@@ -59,20 +65,25 @@ class story extends Application
                     //var_dump($temp_image);
                     foreach ($temp_image[0] as $image) {
                         if($image != "") {
-                            $temp = "<img class='img-thumbnail' src='http://4900.onebite.tk/pics/".$image.".png' width='70px' height='70px'/>";
+                            $temp = "<img class='img-thumbnail' src= '/pics/".$image.".png' width='70px' height='70px'/>";
                             array_push($temp_link,$temp);
                         }
                     }
                     $media_result = implode(" ",$temp_link);
-                } else if($story->video != ""){
+                }
+//echo $story->video;
+                if($story->video != ""){
                     $temp_link = $story->video;
-                    $media_result = "<div class='text-center'><iframe width='300' height='200' src='https://www.youtube.com/embed/".$temp_link."'></iframe></div>";
+                    if($media_result!=="") {
+                        $media_result .= "<br/><br/>";
+                    }
+                    $media_result .= "<div class='text-center'><iframe width='300' height='200' src='https://www.youtube.com/embed/".$temp_link."'></iframe></div>";
                 }
 
                 $tempstories[] = array(
                     'id' => $story->id,
                     'reason' => $story->reason,
-                    'action' => $story->action,
+                    'name' => $story->action,
                     'group' => $story->groupname,
                     'story'=>$story->textstories,
                     'publish' => $tmp_publish,
@@ -96,6 +107,9 @@ class story extends Application
         if(!$this->session->has_userdata('user')) {
             $this->goback();
         } else {
+            if(!isset($this->data["notice"])) {
+                $this->data["notice"] = "<div></div>";
+            }
             $tempArray = $this->stories->getSingleOne($id);
             $this->data['menubar'] = $this->parser->parse("menubar", $this->data, true);
             $this->data["pagebody"] = "editstory";
@@ -104,6 +118,7 @@ class story extends Application
             $this->render();
         }
     }
+
 
     //the function that connect to database, and update things
     public function update(){
@@ -129,13 +144,11 @@ class story extends Application
                 //'agreetoshare' => $_POST['agree'],
                 //'posttime' => $_POST['time']
             );
-
             $this->db->where('id', $_POST['id']);
             for ($i = 0; $i < sizeof($tempstories); $i++) {
                 $this->db->update('stories', $tempstories[$i]);
             }
-
-            $this->getAll();
+            $this->get("all");
         }
     }
 
@@ -145,7 +158,7 @@ class story extends Application
             $this->goback();
         } else {
             $this->db->delete('stories', array('id' => $id));
-            $this->getAll();
+            $this->get("all");
         }
     }
 
@@ -162,6 +175,9 @@ class story extends Application
 
                     if (!strpos($single->images, $a)) {
                         $a = $image . ",";
+                        if(!strpos($single->images, $a)) {
+                            $a = $image;
+                        }
                     }
                     $temp_string = str_replace($a, "", $single->images);
                     break;
@@ -173,66 +189,6 @@ class story extends Application
             $this->db->where('id', $id);
             $this->db->update('stories', $data);
             $this->edit($id);
-        }
-    }
-
-    //filters: get all records that published or not published
-    //if $value = yes , get published
-    //if $value = no, get unpublished
-    public function published($value) {
-        if(!$this->session->has_userdata('user')) {
-            $this->goback();
-        } else {
-            $temp_value = "";
-            $tmp_publish = "";
-            if ($value == 'yes') {
-                $temp_value = 1;
-                $tmp_publish = "<input type='checkbox' name='publish' value='published' checked='checked' />";
-            } else {
-                $temp_value = 0;
-                $tmp_publish = "<input type='checkbox' name='publish' value='published' />";
-            }
-            $this->db->from("stories");
-            $this->db->order_by("posttime", "desc");
-            $this->db->where('published', $temp_value);
-            $records = $this->db->get()->result();
-            $tempstories = array();
-            foreach ($records as $story) {
-                $temp_agree = "";
-                if ($story->agreetoshare == 0) {
-                    $temp_agree = "NO";
-                } else {
-                    $temp_agree = "YES";
-                }
-                $temp_image = array();
-                $temp_link = array();
-                if ($story->images != "") {
-                    $temp_image[] = explode(",", $story->images);
-                    //var_dump($temp_image);
-                    foreach ($temp_image[0] as $image) {
-                        $temp = "<img class='img-thumbnail' src='http://4900.onebite.tk/pics/" . $image . ".png' width='70px' height='70px'/>";
-                        array_push($temp_link, $temp);
-                    }
-                    //echo implode(" ",$temp_link);
-                }
-
-                $tempstories[] = array(
-                    'id' => $story->id,
-                    'reason' => $story->reason,
-                    'action' => $story->action,
-                    'group' => $story->groupname,
-                    'story' => $story->textstories,
-                    'publish' => $tmp_publish,
-                    'media' => implode(" ", $temp_link),
-                    'agreetoshare' => $temp_agree,
-                    'time' => $story->posttime
-                );
-            }
-            $this->data['menubar'] = $this->parser->parse("menubar", $this->data, true);
-            $this->data['footer'] = $this->parser->parse('footer', $this->data, true);
-            $this->data['records'] = $tempstories;
-            $this->data['pagebody'] = "showstories";
-            $this->render();
         }
     }
 

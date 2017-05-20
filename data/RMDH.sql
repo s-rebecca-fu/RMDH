@@ -7,10 +7,12 @@ DROP TABLE IF EXISTS adminuser;
 CREATE TABLE adminuser(
 	id int(255) NOT NULL PRIMARY KEY auto_increment,
 	username VARCHAR(1024) NOT NULL,
-	password VARCHAR(1024) NOT NULL
+	realname VARCHAR(1024) NOT NULL,
+	password VARCHAR(1024) NOT NULL,
+	role VARCHAR(1024) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO adminuser VALUES(1,"aaa@a.a","YWJjMTIz");
+INSERT INTO adminuser VALUES(1,"aaa@a.a","Rebecca Fu","YWJjMTIz","manager");
 
 DROP TABLE IF EXISTS stories;
 CREATE TABLE stories(
@@ -31,3 +33,4 @@ INSERT INTO stories VALUES(2,"no reason","cooking","omg","hahaha thisis a test",
 INSERT INTO stories VALUES(3,"no reason","cooking","omg","hahaha thisis a test","fox,polarbear,fox,polarbear","video",0,1,"2017-03-03");
 INSERT INTO stories VALUES(4,"no reason","cooking","omg","hahaha thisis a test","cat,dog,liuliu,qiqi,bear,omg","video",0,0,"2017-02-01");
 INSERT INTO stories VALUES(5,"no reason","cooking","omg","this hhhh","","d-bw5eV8BdY",1,1,"2017-05-01");
+INSERT INTO stories VALUES(6,"no reason","cooking","omg","this hhhh","fox,polarbear","",1,1,"2017-05-01");

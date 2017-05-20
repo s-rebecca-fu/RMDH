@@ -13,8 +13,8 @@
 <div class="row">
     <div class="col-xs-10 alert menurbg text-center">
         <div class="col-xs-1"><a class="menu" href="/story/">Home</a></div>
-        <div class="col-xs-1"><a class="menu" href="/story/getAll">Story</a></div>
-        <div class="col-xs-2 text-left"><a class="menu" href="/user/addUser">Add User</a></div>
+        <div class="col-xs-1"><a class="menu" href="/story/get/all">Story</a></div>
+        <div class="col-xs-2 text-left"><a class="menu" href="/user/">User</a></div>
         <div class="col-xs-8"></div>
     </div>
     <div class="col-xs-2 text-center alert menugbg menutext">

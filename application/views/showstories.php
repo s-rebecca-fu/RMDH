@@ -7,21 +7,20 @@
  */
 ?>
 {menubar}
-
 <div class="row text-center">
     <div class="row ">
         <div class="col-md-1">SORT:</div>
-        <div class="col-md-1"><a href="/story/getAll">ALL</a></div>
-        <div class="col-md-1"><a href="/story/published/yes">Published</a></div>
-        <div class="col-md-2 text-left"><a href="/story/published/no">Not Published</a></div>
+        <div class="col-md-1"><a href="/story/get/all">ALL</a></div>
+        <div class="col-md-1"><a href="/story/get/yes">Published</a></div>
+        <div class="col-md-2 text-left"><a href="/story/get/no">Not Published</a></div>
     </div>
-    <table class="table">
+    <table class="table text-center">
         <tr class="boldtext">
-            <td>ID</td>
-            <td>Reason to Be Volunteer</td>
-            <td>Action</td>
+            <td>Name</td>
             <td>Group</td>
-            <td>Text</td>
+            <td>Time</td>
+            <td>Reason to choose RMHCNA</td>
+            <td>Shared Stories</td>
             <td>Media</td>
             <td>Publish</td>
             <td>Agree to Share</td>
@@ -29,10 +28,10 @@
         </tr>
         {records}
         <tr>
-            <td>{id}</td>
-            <td>{reason}</td>
-            <td>{action}</td>
+            <td>{name}</td>
             <td>{group}</td>
+            <td>{time}</td>
+            <td>{reason}</td>
             <td>{story}</td>
             <td>{media}</td>
             <td>{publish}</td>
