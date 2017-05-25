@@ -65,7 +65,7 @@ class stories extends MY_Model
                 $tempArray = array(
                     'id' => $single->id,
                     'reason' => $single->reason,
-                    'action' => $single->action,
+                    'name' => $single->action,
                     'group' => $single->groupname,
                     'text' => $single->textstories,
                     'media' => $media_result,

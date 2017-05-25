@@ -117,15 +117,20 @@ class user extends Application
                         'role' => $role
                     );
                     $this->db->insert("adminuser",$resultArray);
-                    $this->data["error"] = "<div class='span11 alert alert-success'>add admin user successfully</div><br>";
+                    $this->index();
+                    return;
                 } else {
                     $this->data["error"] = "<div class='span11 alert alert-danger'>The username exits already. Please change another one.</div><br>";
                 }
             } else {
                 $this->data["error"] = "<div class='span11 alert alert-danger'>your password doesn't match</div><br>";
             }
+            $this->data['menubar'] = $this->parser->parse("menubar", $this->data, true);
+            $this->data['footer'] = $this->parser->parse('footer', $this->data, true);
+            $this->data['pagebody'] = "userform";
+            $this->render();
         }
-        $this->index();
+
     }
 
     public function checkDuplicateName($username) {

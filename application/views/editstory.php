@@ -15,7 +15,7 @@
             <div class="col-xs-12 editlabeltext">Volunteer Name</div>
         </div>
         <div class="col-md-4">
-            <input class="form-control" type="text" name="action" class="editwidth" value={action}>
+            <input class="form-control" type="text" name="action" class="editwidth" value={name}>
         </div>
     </div>
     <div class="row">
